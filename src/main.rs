@@ -86,11 +86,27 @@ fn get_guess() -> Result<(usize, usize), GuessError> {
     return Ok((row, col))
 }
 
+fn has_won(b: &Board) -> Option<Player> {
+    // Horizontal
+    for row in b.board.iter() {
+        if row[0].is_some() && row[0] == row[1] && row[0] == row[2] { return row[0]; }
+    }
+    // Vertical
+    for i in 0..3 {
+        if b.board[0][i].is_some() && b.board[0][i] == b.board[1][i] && b.board[0][i] == b.board[2][i] { return b.board[0][i] }
+    };
+    // Diagonal
+    if b.board[0][0].is_some() && b.board[0][0] == b.board[1][1] && b.board[0][0] == b.board[2][2] { return b.board[0][0] }
+    if b.board[0][2].is_some() && b.board[0][2] == b.board[1][1] && b.board[0][2] == b.board[2][0] { return b.board[0][2] }
+
+    None
+}
+
 
 fn main() {
     let mut b = Board{board: [
-        [Some(Player::X), None, None],
-        [None, Some(Player::O), None],
+        [None, None, None],
+        [None, None, None],
         [None, None, None],
     ]};
     println!("\nBoard:\n{}", b);
@@ -117,5 +133,11 @@ fn main() {
             println!("Space already occupied");
             continue;
         }
+
+        if let Some(res) = has_won(&b) {
+            println!("Player {} has won!", res);
+            break
+        }
+        
     }
 }
