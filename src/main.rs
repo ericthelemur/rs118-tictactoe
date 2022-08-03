@@ -1,9 +1,8 @@
 use std::{fmt, io};
 
-
 #[derive(PartialEq, Eq, Copy, Clone)]
 enum Player {
-    X, O
+    X, O,
 }
 
 impl fmt::Display for Player {
@@ -16,12 +15,12 @@ impl fmt::Display for Player {
 }
 
 struct Board {
-    board: [[Option<Player>; 3]; 3]
+    board: [[Option<Player>; 3]; 3],
 }
 
 impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "  A B C \n").unwrap();
+        writeln!(f, "  A B C ").unwrap();
         let mut i = 0;
         for row in self.board.iter() {
             i += 1;
@@ -43,7 +42,7 @@ enum GuessError {
     ReadError,
     GuessLengthError,
     FirstSymbolError,
-    SecondSymbolError
+    SecondSymbolError,
 }
 
 impl fmt::Display for GuessError {
@@ -53,7 +52,7 @@ impl fmt::Display for GuessError {
             GuessError::GuessLengthError => "Guess in the format 'A1'.",
             GuessError::FirstSymbolError => "The first letter should be A, B or C.",
             GuessError::SecondSymbolError => "The second digit should be 1, 2 or 3.",
-            _ => "Error"
+            _ => "Error",
         })
     }
 }
@@ -71,19 +70,19 @@ fn get_guess() -> Result<(usize, usize), GuessError> {
     let fst = chars.next().ok_or(GuessError::FirstSymbolError)?;
     let col: usize = match fst {
         'A' => 0, 'B' => 1, 'C' => 2,
-        _ => { return Err(GuessError::FirstSymbolError) }
+        _ => return Err(GuessError::FirstSymbolError),
     };
     // Second char
     let snd = chars.next().ok_or(GuessError::SecondSymbolError)?;
     println!("{}", snd);
     let row: usize = match snd {
         '1' => 0, '2' => 1, '3' => 2,
-        _ => { return Err(GuessError::SecondSymbolError) }
+        _ => return Err(GuessError::SecondSymbolError),
     };
 
     // if chars.next().is_some() { return Err(GuessError::GuessLengthError) }
 
-    return Ok((row, col))
+    Ok((row, col))
 }
 
 fn has_won(b: &Board) -> Option<Player> {
@@ -93,15 +92,14 @@ fn has_won(b: &Board) -> Option<Player> {
     }
     // Vertical
     for i in 0..3 {
-        if b.board[0][i].is_some() && b.board[0][i] == b.board[1][i] && b.board[0][i] == b.board[2][i] { return b.board[0][i] }
+        if b.board[0][i].is_some() && b.board[0][i] == b.board[1][i] && b.board[0][i] == b.board[2][i] { return b.board[0][i]; }
     };
     // Diagonal
-    if b.board[0][0].is_some() && b.board[0][0] == b.board[1][1] && b.board[0][0] == b.board[2][2] { return b.board[0][0] }
-    if b.board[0][2].is_some() && b.board[0][2] == b.board[1][1] && b.board[0][2] == b.board[2][0] { return b.board[0][2] }
+    if b.board[0][0].is_some() && b.board[0][0] == b.board[1][1] && b.board[0][0] == b.board[2][2] { return b.board[0][0]; }
+    if b.board[0][2].is_some() && b.board[0][2] == b.board[1][1] && b.board[0][2] == b.board[2][0] { return b.board[0][2]; }
 
     None
 }
-
 
 fn main() {
     let mut b = Board{board: [
@@ -136,7 +134,7 @@ fn main() {
 
         if let Some(res) = has_won(&b) {
             println!("Player {} has won!", res);
-            break
+            break;
         }
         
     }
